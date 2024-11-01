@@ -1,35 +1,27 @@
 import {Global, Module} from '@nestjs/common';
 import {AppService} from './app.service';
 import {TypeOrmModule} from "@nestjs/typeorm";
-import {ValuteHeadEntity} from "./entity/valute_head";
-import {ValuteBodyEntity} from "./entity/valute_body";
-import {join} from 'path'
+import {ValuteHeadEntity} from "../entity/valute_head";
+import {ValuteBodyEntity} from "../entity/valute_body";
+import {options} from "../data-source";
+import {AppController} from "./app.controller";
+
 @Global()
 @Module({
     imports: [
-        TypeOrmModule.forRoot({
-            type: 'mariadb',
-            host: 'localhost',
-            port: 3306,
-            username: 'root',
-            password: 'qOJYo*@V',
-            database: 'test',
-            entities: [
-                __dirname+'/entity/*.{ts,js}'
-            ],
-             // logging:[
-             //     "error",
-             //     "query"
-             // ],
-            synchronize: true,
-        }),
-        TypeOrmModule.forFeature([ValuteHeadEntity,ValuteBodyEntity]),
-
+        TypeOrmModule.forRoot(options),
+        TypeOrmModule.forFeature([
+            ValuteHeadEntity,
+            ValuteBodyEntity
+        ]),
     ],
     providers: [
         AppService
     ],
-    exports:[
+    controllers: [
+        AppController
+    ],
+    exports: [
         AppService
 
     ]

@@ -1,7 +1,7 @@
 import {Column, Entity, OneToMany, PrimaryColumn} from "typeorm";
 import {ValuteBodyEntity} from "./valute_body";
 
-@Entity('valute_header')
+@Entity('valute_head')
 export class ValuteHeadEntity {
     @PrimaryColumn({
         unique: true,
@@ -16,6 +16,9 @@ export class ValuteHeadEntity {
 
     @Column()
     Name: string
+
+    @Column()
+    Nominal: number
 
     @OneToMany(() => ValuteBodyEntity, body => body.head)
     bodys:ValuteBodyEntity[]

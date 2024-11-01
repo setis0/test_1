@@ -3,9 +3,9 @@ import fetch from "node-fetch";
 import {XMLParser} from "fast-xml-parser";
 import {ValuteChunk, ValuteData, ValuteXml} from "./types";
 import {InjectRepository} from "@nestjs/typeorm";
-import {ValuteHeadEntity} from "./entity/valute_head";
+import {ValuteHeadEntity} from "../entity/valute_head";
 import {In, Repository} from "typeorm";
-import {ValuteBodyEntity} from "./entity/valute_body";
+import {ValuteBodyEntity} from "../entity/valute_body";
 import {createHash} from "crypto";
 import {decode} from 'iconv-lite'
 
@@ -22,6 +22,22 @@ export class AppService {
         @InjectRepository(ValuteHeadEntity) private head: Repository<ValuteHeadEntity>,
         @InjectRepository(ValuteBodyEntity) private body: Repository<ValuteBodyEntity>
     ) {
+    }
+
+    getRepository(){
+        return this
+            .head
+            .createQueryBuilder('head')
+            .leftJoinAndSelect("head.bodys", "body")
+            .select([
+                'NumCode',
+                'CharCode',
+                'Name',
+                'Nominal',
+                'Value',
+                'VunitRate',
+                'createdAt',
+            ])
     }
 
     /**
@@ -48,9 +64,9 @@ export class AppService {
 
     async handler() {
         const xml = await this.fetch();
-        // if (this.check(xml)) {
-        //     return
-        // }
+        if (this.check(xml)) {
+            return
+        }
         const data = this.parse(xml);
         await this.record(data)
     }
@@ -81,8 +97,8 @@ export class AppService {
         return jObj["ValCurs"]["Valute"].map(function (value: ValuteChunk): ValuteData {
             return {
                 ...value,
-                VunitRate: parseFloat(value.VunitRate),
-                Value: parseFloat(value.Value)
+                VunitRate: parseFloat(value.VunitRate.replace(',','.')),
+                Value: parseFloat(value.Value.replace(',','.'))
             }
         })
     }
@@ -107,7 +123,7 @@ export class AppService {
             let insertData = data
                 .map<ValuteHeadEntity>(value => {
                     const entity = new ValuteHeadEntity()
-                    for (const id of ["NumCode", "CharCode", "Name"]) {
+                    for (const id of ["NumCode", "CharCode", "Name","Nominal"]) {
                         entity[id] = value[id]
                     }
                     return entity

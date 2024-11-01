@@ -36,7 +36,7 @@ $ pnpm install
 
 ```bash
 # development
-$ pnpm run start
+$ npm run start
 
 # watch mode
 $ pnpm run start:dev
@@ -99,22 +99,34 @@ TypeOrmModule.forRoot({
     synchronize: true,
 })
 ```
-- скрипт для создания модели данных этой сущности в базе данных (так называемая миграция)
-> [typeorm](https://typeorm.io/) используется
-```typescript
-
+создаем модели в базе
+```shell
+$ npm run typeorm schema:sync
 ```
-package.json
+- скрипт для создания модели данных этой сущности в базе данных (так называемая миграция)
+> [typeorm](https://typeorm.io/) используется читай [typeorm cli](https://github.com/typeorm/typeorm/blob/master/docs/using-cli.md)
+
+package.json  [typeorm cli](https://github.com/typeorm/typeorm/blob/master/docs/using-cli.md)
 ```json
 "scripts": {
-    
-    "typeorm": "ts-node ./node_modules/typeorm/cli",
-    "migration:run": "npm run typeorm migration:run -- -d ./src/config/typeorm.ts",
-    "migration:generate": "npm run typeorm -- -d ./src/config/typeorm.ts migration:generate ./src/migrations/$npm_config_name",
-    "migration:create": "npm run typeorm -- migration:create ./src/migrations/$npm_config_name",
-    "migration:revert": "npm run typeorm -- -d ./src/config/typeorm.ts migration:revert"
+
+"typeorm": "ts-node ./node_modules/typeorm/cli.js -d ./src/data-source.ts",
+"typeorm:migration:generate": "npm run typeorm -- migration:generate  -o ./src/migration/ -t",
+"typeorm:migration:run": "npm run typeorm -- migration:run",
+"typeorm:migration:create": "npm run typeorm -- migration:create -t",
+"typeorm:schema:drop": "npm run typeorm -- schema:drop",
+"typeorm:migration:revert": "npm run typeorm -- migration:revert",
   }
 ```
+скрипт, который запускается из консоли вручную или (так называемый консольный контроллер), обращается к чужому серверу по HTTP, разбирает ответ формата XML, сохраняет в базу данных
+```shell
+$ npm run start:cron
+```
+- скрипт, который будет выдавать сведения из базы данных при запросах по HTTP протоколу (так называемый веб-контролер)
+> http://localhost:3000/
+
+- скрипт для тестирования консольного контролера и веб-контроллера
+> тестирование jest  
 ## Support
 
 Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).

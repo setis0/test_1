@@ -1,38 +1,46 @@
-import { NestFactory } from '@nestjs/core';
+import {NestFactory} from '@nestjs/core';
 import {AppModule, AppService} from "./app";
 import {CronModule} from "./cron";
-import {INestApplicationContext} from "@nestjs/common";
+import {Logger} from "@nestjs/common";
+import * as process from "process";
 
-// async function cli() {
-//   let app:INestApplicationContext;
-//   console.log(process.argv,process.argv0)
-//   const command = process.argv[2];
-//   switch (command) {
-//     case 'cron':
-//       app = await NestFactory.createApplicationContext(
-//           CronModule
-//       );
-//       break;
-//     case 'fetch':
-//       app = await NestFactory.createApplicationContext(
-//           AppModule
-//       );
-//       const service = app.get(AppService);
-//       await service.fetch()
-//       await app.close();
-//       process.exit(0);
-//       break;
-//
-//     default:
-//       console.log('Command not found');
-//       process.exit(1);
-//   }
-//
-// }
-// cli();
-async function bootstrap(){
-  const application = await NestFactory.createApplicationContext(
-      CronModule
-  );
+async function cli() {
+    const command = process.argv[2];
+    const logger = new Logger('cli')
+    switch (command) {
+        case 'cron': {
+            logger.log('cron')
+            const app = await NestFactory.createApplicationContext(
+                CronModule
+            );
+        }
+            break;
+        case 'http': {
+            logger.log('http')
+            const app = await NestFactory.create(
+                AppModule
+            );
+            await app.listen(3000);
+        }
+
+            break;
+        case 'all':
+        {
+            const app1 = await NestFactory.createApplicationContext(
+                CronModule
+            );
+            const app2 = await NestFactory.create(
+                AppModule
+            );
+            await app2.listen(3000);
+        }
+            break;
+
+        default:
+            console.log('Command not found',process.argv);
+            process.exit(1);
+    }
+
 }
-bootstrap()
+
+cli()

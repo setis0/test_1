@@ -1,5 +1,4 @@
-export * from './entity/valute_head'
-export * from './entity/valute_body'
+
 export * from './types'
 export * from './app.module'
 export * from './app.service'

@@ -1,0 +1,21 @@
+version: '3.5'
+services:
+  mariadb:
+   image: mariadb:latest
+   container_name: mariadb
+   restart: always
+   volumes:
+     - './mariadb:/var/lib/mysql'
+   #      - './my.cnf:/etc/mysql/conf.d/my.cnf:ro'
+   ports:
+     - '3306:3306'
+   environment:
+     MARIADB_ROOT_PASSWORD: "qOJYo*@V"
+     MARIADB_ROOT_HOST: "%"
+     MARIADB_ALLOW_EMPTY_PASSWORD: "no"
+     MARIADB_USER: "crypto"
+     MARIADB_DATABASE: "crypto"
+     MARIADB_PASSWORD: "$oXNxPJ%"
+     MARIADB_INITDB_SKIP_TZINFO: "1"
+     TZ: "Asia/Yekaterinburg"
+

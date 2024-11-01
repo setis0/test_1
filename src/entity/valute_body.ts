@@ -6,11 +6,11 @@ export class ValuteBodyEntity {
     @PrimaryGeneratedColumn()
     id: number
 
-    @Column({nullable: true})
+    @Column({nullable: false})
     headId: number
 
     @ManyToOne(() => ValuteHeadEntity, head => head.bodys)
-    @JoinColumn()
+    @JoinColumn({name:'headId'})
     head: ValuteHeadEntity
 
     @Column({
